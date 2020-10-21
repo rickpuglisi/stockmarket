@@ -1,0 +1,31 @@
+{
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier"
+    ],
+    "rules": {
+        "class-name": false,
+        "interface-name": false,
+        "max-classes-per-file": false,
+        "member-ordering": [
+            true,
+            {
+                "order": "instance-sandwich"
+            }
+        ],
+        "no-empty-interface": false,
+        "no-string-literal": false,
+        "no-var-requires": false,
+        "object-literal-sort-keys": false,
+        "one-variable-per-declaration": false,
+        "variable-name": {
+            "options": [
+                "allow-leading-underscore",
+                "ban-keywords",
+                "check-format",
+                "allow-pascal-case",
+                "allow-snake-case"
+            ]
+        }
+    }
+}
