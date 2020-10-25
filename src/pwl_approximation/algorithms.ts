@@ -1,4 +1,4 @@
-import { IPWL_Algorithm, IPWL_ApproximationDocument, IPWL_ApproximationResult } from "./interfaces";
+import { IPWL_Algorithm, IPWL_ApproximationDocument, IPWL_ApproximationResult, IPWL_Series } from "./interfaces";
 import { getLogger } from "../logging/logger";
 
 const logger = getLogger("pwl_algorithm");
@@ -15,6 +15,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
   private sumX2: number[] = [];
   private sumXY: number[] = [];
   private sumY: number[] = [];
+  private yHat: number[] = []; 
   constructor(
     public name: string,
     public numSegments: number,
@@ -124,6 +125,21 @@ export class PWL_Algorithm implements IPWL_Algorithm {
   public findQPSegments(): IPWL_ApproximationDocument[] {
     // TODO?: Not sure if worth doing
     return;
+  }
+
+  public getSeries(segments: IPWL_ApproximationDocument[]): IPWL_Series {
+    let j = 0;
+    for (let i=0; i < this.x.length; i++) {
+      if (this.x[i] > segments[j].endingXPoint) {
+        j++;
+      }
+      this.yHat[i] = segments[j].intercept + segments[j].slope * this.x[i];
+    }
+    return {
+      x: this.x,
+      y: this.y,
+      yHat: this.yHat
+    }
   }
 
   /**

@@ -36,6 +36,12 @@ export interface IPWL_ApproximationDocument {
     channelLength: number;
 }
 
+export interface IPWL_Series {
+    x: number[];
+    y: number[];
+    yHat: number[];
+}
+
 export interface IPWL_Algorithm {
     findFixedNumSegments(): IPWL_ApproximationDocument[];
     findFixedRejectDiscontinousSegments(): IPWL_ApproximationDocument[];

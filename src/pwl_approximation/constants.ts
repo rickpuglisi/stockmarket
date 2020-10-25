@@ -1,3 +1,5 @@
+export const YFINANCE_URL = 'http://localhost:5000/download/';
+
 export const sampleX = [
     0.0114,
     0.0861,

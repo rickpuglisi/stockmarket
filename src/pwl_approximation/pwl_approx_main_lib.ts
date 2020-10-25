@@ -4,7 +4,7 @@ import { IPortfolioProvider } from "../Utilities/portfolio/interfaces";
 import { IResultWriter } from "../Utilities/reporting/interfaces";
 import { ScoringApp } from "../Utilities/scoring_app_lib";
 import { PWL_Algorithm } from "./algorithms";
-import { sampleX, sampleY } from "./constants";
+import { sampleX, sampleY, YFINANCE_URL } from "./constants";
 import { IPriceHistory, IPWL_ApproximationDocument, IPWL_ApproximationResult } from "./interfaces";
 import fetch = require("node-fetch");
 
@@ -27,11 +27,11 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         logger.info(`PWL_Approximation input config: ${JSON.stringify(this.config)}`);
         let result;
 
-        fetch('http://localhost:5000/download/' + this.config.ticker)
+        const response = await fetch(YFINANCE_URL + this.config.ticker)
             .then(res => res.json())
             .then(json => {
                 result = this.findSegments(5, json);
-            })
+            });
         return result;
     }
 
@@ -64,7 +64,8 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         // use xpoints
         const test3Result = algorithm.findFixedRejectDiscontinousSegments();
         this.reportResult("xpoints", test3Result);
-        return this.makeResultObject();
+        const series = algorithm.getSeries(test3Result);
+        return this.makeResultObject(series);
     }
 
     private findSegments(numSegments: number, json: IPriceHistory) {
@@ -85,7 +86,8 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         // const segmentResults = algorithm.findFixedNumSegments(true);
         const segmentResults = algorithm.findFixedRejectDiscontinousSegments();
         this.reportResult("xpoints", segmentResults);
-        return this.makeResultObject();        
+        const series = algorithm.getSeries(segmentResults);
+        return this.makeResultObject(series);        
     }
 
 }

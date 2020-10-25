@@ -4,17 +4,11 @@ export interface IScoringApp<T> {
     main(): Promise<T>;
 }
 
-export interface IReportIdentifier {
+export interface IScoringResult {
     _id: string;
-    results: {
-        node: string;
-    };
+    results: any;
     runDate: Date;
     scoringAppName: string;
-}
-
-export interface IScoringResult {
-    reportIdentifiers: IReportIdentifier[];
 }
 
 export interface IAI_Scores {
