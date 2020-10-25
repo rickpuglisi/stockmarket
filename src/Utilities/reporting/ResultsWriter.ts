@@ -6,18 +6,19 @@ import { IResultWriter } from "./interfaces";
 export class ResultsWriter implements IResultWriter {
     constructor(private readonly scoreRepository: MongoRepository<AI_Scores>) {}
 
-    public async write(uuid: string, score: IAI_Scores): Promise<void> {
-        await Promise.all([this.storeResultEntry(score, uuid)]);
+    public async write(uuid: string, symbol: string, score: IAI_Scores): Promise<void> {
+        await Promise.all([this.storeResultEntry(uuid, symbol, score)]);
     }
 
     private async storeResultEntry(
+        uuid: string,
+        symbol: string,
         score: IAI_Scores,
-        uuid: string
     ): Promise<void> {
         if (!score) {
             return;
         }
 
-        await Promise.all([this.scoreRepository.insertOne({ jobId: uuid, score })]);
+        await Promise.all([this.scoreRepository.insertOne({ jobId: uuid, symbol: symbol, score })]);
     }
 }

@@ -35,10 +35,10 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         return result;
     }
 
-    public async reportResult(comment: string, result: IPWL_ApproximationDocument[]) {
+    public async reportResult(symbol: string, comment: string, result: IPWL_ApproximationDocument[]) {
         const pwlResult = {
             date: new Date(),
-            symbol: "Rick",
+            symbol: symbol,
             scoreName: "pwl_approx",
             scoreValue: 0,
             scoreObject: result,
@@ -47,7 +47,7 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
 
         logger.info(`PWL_Approximation Result = ${JSON.stringify(pwlResult)}`);
 
-        await this.resultsWriter.write(this.config.uuid, pwlResult);
+        await this.resultsWriter.write(this.config.uuid, symbol, pwlResult);
     }
 
     private findSampleSegments() {
@@ -57,13 +57,13 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
 
         // use discontinous regression lines
         const test1Result = algorithm.findFixedNumSegments(false);
-        this.reportResult("regression", test1Result);
+        this.reportResult("sample", "regression", test1Result);
         // use breakpoints
         const test2Result = algorithm.findFixedNumSegments();
-        this.reportResult("breakpoints", test2Result);
+        this.reportResult("sample", "breakpoints", test2Result);
         // use xpoints
         const test3Result = algorithm.findFixedRejectDiscontinousSegments();
-        this.reportResult("xpoints", test3Result);
+        this.reportResult("sample", "xpoints", test3Result);
         const series = algorithm.getSeries(test3Result);
         return this.makeResultObject(series);
     }
@@ -85,7 +85,7 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         // use xpoints
         // const segmentResults = algorithm.findFixedNumSegments(true);
         const segmentResults = algorithm.findFixedRejectDiscontinousSegments();
-        this.reportResult("xpoints", segmentResults);
+        this.reportResult(this.config.ticker, "xpoints", segmentResults);
         const series = algorithm.getSeries(segmentResults);
         return this.makeResultObject(series);        
     }
