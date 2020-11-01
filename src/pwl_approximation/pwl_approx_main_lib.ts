@@ -27,7 +27,12 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         logger.info(`PWL_Approximation input config: ${JSON.stringify(this.config)}`);
         let result;
 
-        const response = await fetch(YFINANCE_URL + this.config.ticker)
+        let url = YFINANCE_URL + this.config.ticker;
+        if (this.config.interval) {
+            url += (`?interval=${this.config.interval}`);
+        }
+
+        const response = await fetch(url)
             .then(res => res.json())
             .then(json => {
                 result = this.findSegments(5, json);
@@ -85,7 +90,9 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         // use xpoints
         // const segmentResults = algorithm.findFixedNumSegments(true);
         const segmentResults = algorithm.findFixedRejectDiscontinousSegments();
+        // write to mongo
         this.reportResult(this.config.ticker, "xpoints", segmentResults);
+        // prepare return
         const series = algorithm.getSeries(segmentResults);
         return this.makeResultObject(series);        
     }

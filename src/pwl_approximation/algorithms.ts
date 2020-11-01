@@ -1,4 +1,4 @@
-import { IPWL_Algorithm, IPWL_ApproximationDocument, IPWL_ApproximationResult, IPWL_DataPoint } from "./interfaces";
+import { IPWL_Algorithm, IPWL_ApproximationDocument, IPWL_ApproximationResult, IPWL_Channel, IPWL_DataPoint } from "./interfaces";
 import { getLogger } from "../logging/logger";
 
 const logger = getLogger("pwl_algorithm");
@@ -11,6 +11,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
   public cost: number[][] = [];
   public breakpoints: number[][] = [];
   public xpoints: number[][] = [];
+  public channels: IPWL_Channel[] = [];
   private sumX: number[] = [];
   private sumX2: number[] = [];
   private sumXY: number[] = [];
@@ -76,6 +77,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
       // get the next segment's starting index
       startingPoint = this.breakpoints[startingPoint][i - 1];
     }
+    this.getChannels(result);
     return this.writeSegments(result);
   }
 
@@ -113,6 +115,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
     }
     // starting point of first segment is always first point
     result.xpoints[0] = this.x[0];
+    this.getChannels(result);
     return this.writeSegments(result);
   }
 
@@ -128,17 +131,18 @@ export class PWL_Algorithm implements IPWL_Algorithm {
   }
 
   public getSeries(segments: IPWL_ApproximationDocument[]): IPWL_DataPoint[] {
-    const series = [];
+    const series: IPWL_DataPoint[] = [];
     let j = 0;
     for (let i=0; i < this.x.length; i++) {
       if (this.x[i] > segments[j].endingXPoint) {
         j++;
       }
-      this.yHat[i] = segments[j].intercept + segments[j].slope * this.x[i];
       series.push({
         x: this.keys[i],
         y: this.y[i],
-        yHat: this.yHat[i]
+        yHat: this.yHat[i],
+        ub: this.yHat[i] + this.channels[j].ub,
+        lb: this.yHat[i] - this.channels[j].lb
       })
     }
     return series;
@@ -370,6 +374,30 @@ export class PWL_Algorithm implements IPWL_Algorithm {
     return error;
   }
 
+  private getChannels(result: IPWL_ApproximationResult) {
+    let j = 0;
+    let ub = 0;
+    let lb = 0;
+    for (let i=0; i < this.x.length; i++) {
+      if (this.x[i] > result.xpoints[j + 1]) {
+        this.channels[j] = {ub: ub, lb: lb};
+        // reset
+        j++;
+        ub = 0;
+        lb = 0;
+      }
+      this.yHat[i] = result.intercepts[j] + result.slopes[j] * this.x[i];
+      // get channel widths
+      if (this.y[i] - this.yHat[i] > ub) {
+        ub = this.y[i] - this.yHat[i];
+      }
+      if (this.yHat[i] - this.y[i] > lb) {
+        lb = this.yHat[i] - this.y[i];
+      }
+    }
+    this.channels[j] = {ub: ub, lb: lb};
+  }
+
   private writeSegments(result: IPWL_ApproximationResult): IPWL_ApproximationDocument[] {
     const numSegments = result.indices.length - 1;
     const docs: IPWL_ApproximationDocument[] = [];
@@ -386,6 +414,9 @@ export class PWL_Algorithm implements IPWL_Algorithm {
         endingVertex: 0,
         slope: result.slopes[i],
         intercept: result.intercepts[i],
+        upperBound: this.channels[i].ub,
+        lowerBound: this.channels[i].lb,
+        channelWidth: this.channels[i].ub + this.channels[i].lb,
         channelLength: result.indices[i + 1] - result.indices[i],
       });
     }

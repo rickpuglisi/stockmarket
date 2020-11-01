@@ -33,13 +33,23 @@ export interface IPWL_ApproximationDocument {
     endingVertex: number;
     slope: number;
     intercept: number;
+    upperBound: number;
+    lowerBound: number;
+    channelWidth: number;
     channelLength: number;
 }
 
 export interface IPWL_DataPoint {
-    x: number;
+    x: string;
     y: number;
     yHat: number;
+    ub: number;
+    lb: number;
+}
+
+export interface IPWL_Channel {
+    ub: number;
+    lb: number;
 }
 
 export interface IPWL_Algorithm {
