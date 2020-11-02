@@ -10,14 +10,14 @@ import { ResultsWriter } from "../../Utilities/reporting/ResultsWriter";
 import { PWL_ApproximationArguments } from "./args";
 
 export function PWL_ApproximationAppFactory(
-    config: IPortfolioProviderFactoryContext,
+    portfConfig: IPortfolioProviderFactoryContext,
     args: PWL_ApproximationArguments,
     connection: Connection,
     scoresRepository: MongoRepository<AI_Scores>,
     securityRepository: MongoRepository<Security>,
     analyticsRepository: MongoRepository<Analytics>
 ) {
-    updatePWL_ApproximationArguments(config, args);
+    updatePWL_ApproximationArguments(portfConfig, args);
 
     const resultsWriter = new ResultsWriter(scoresRepository);
 
@@ -26,6 +26,6 @@ export function PWL_ApproximationAppFactory(
         securityRepository,
         analyticsRepository
     );
-    const portfolioProvider = portfolioProviderFactory.create(config);
-    return new PWL_ApproximationApp(resultsWriter, portfolioProvider, config);
+    const portfolioProvider = portfolioProviderFactory.create(portfConfig);
+    return new PWL_ApproximationApp(resultsWriter, portfolioProvider);
 }

@@ -1,5 +1,4 @@
 import { Logger } from "mongodb";
-import { getuid } from "process";
 import { getLogger } from "../logging/logger";
 import { IScoringApp, IScoringResult } from "../miscellaneous/interfaces";
 import { guid } from "./general_lib";
@@ -7,22 +6,16 @@ import { guid } from "./general_lib";
 const logger = getLogger("pwl_algorithm");
 
 export abstract class ScoringApp<T> implements IScoringApp<T> {
-    public name = "App is not set";
-    public abort = false;
-    public uuid: string;
-
-    constructor(protected config) {
-        this.name = config.appName;
-        this.uuid = guid();
+    constructor(public name: string) {
     }
 
-    public abstract main(): Promise<T>;
+    public abstract main(config: any): Promise<T>;
 
     protected makeResultObject(results: any): IScoringResult {
         return {
-            _id: this.config.uuid ? this.config.uuid : getuid(),
+            _id: guid(),
             results: results,
-            runDate: this.config.runDate,
+            runDate: new Date(),
             scoringAppName: this.name,
         }
     }

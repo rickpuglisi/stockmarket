@@ -5,27 +5,30 @@ import { IResultWriter } from "../Utilities/reporting/interfaces";
 import { ScoringApp } from "../Utilities/scoring_app_lib";
 import { PWL_Algorithm } from "./algorithms";
 import { sampleX, sampleY, YFINANCE_URL } from "./constants";
-import { IPriceHistory, IPWL_ApproximationDocument, IPWL_ApproximationResult } from "./interfaces";
+import { IPriceHistory, IPWL_ApproximationDocument } from "./interfaces";
 import fetch = require("node-fetch");
+import { AppNames } from "../miscellaneous/constants";
 
 const logger = getLogger("pwl_approximation_main");
 
 export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
+    public config: any;
+
     constructor(
         private resultsWriter: IResultWriter,
         private portfolioProvider: IPortfolioProvider,
-        config
     ) {
-        super(config);
+        super(AppNames.PWL_Approx);
     }
 
     /**
      * The main entry point after the constructor
      * @returns {IScoringResult} - scoring result
      */
-    public async main(): Promise<IScoringResult> {
-        logger.info(`PWL_Approximation input config: ${JSON.stringify(this.config)}`);
+    public async main(jobConfig: any): Promise<IScoringResult> {
+        this.config = jobConfig;
         let result;
+        logger.info(`PWL_Approximation input config: ${JSON.stringify(this.config)}`);
 
         let url = YFINANCE_URL + this.config.ticker;
         if (this.config.interval) {

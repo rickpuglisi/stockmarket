@@ -24,7 +24,6 @@ function setHoldingsOrPositionCollection(config: any, body: any) {
 
 export function getDefaultConfig(): IDefaultConfig {
     return {
-        appName: undefined,
         portName: null,
         outputDb: ScoreStrings.scoring,
         recalc: false,
@@ -35,10 +34,9 @@ export function getDefaultConfig(): IDefaultConfig {
     };
 }
 
-export async function getConfigForPWL_Approximation(body) {
+export function getPortfConfig(body) {
     const config: any = getDefaultConfig();
     Object.assign(config, {
-        appName: "Scoring",
         recalc: false,
         usePosCol: false,
         posColName: null,
@@ -46,9 +44,15 @@ export async function getConfigForPWL_Approximation(body) {
             uuid: '',
         }
     });
-    Object.assign(config, body);
     setHoldingsOrPositionCollection(config, body);
-    setRunDateAndUuid(config, body);
+    return config
+}
 
+export async function getJobConfigForPWL_Approximation(ticker: string, interval: string) {
+    const config: any = {
+        ticker,
+        interval
+    };
+    // setRunDateAndUuid(config, body);
     return config;
 }

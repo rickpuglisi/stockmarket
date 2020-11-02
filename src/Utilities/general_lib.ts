@@ -24,6 +24,11 @@ export function guid(): string {
     );
 }
 
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  
 /**
  * This is a deep copy
  */

@@ -1,7 +1,6 @@
 import { ISourceMap } from "../mapping/interfaces";
 
 export interface IPortfolioProviderFactoryContext {
-    appName: string;
     holdings?: any[];
     portName: string;
     outputDb?: string;

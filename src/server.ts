@@ -76,6 +76,39 @@ createConnections()
             )
         );
 
+        context.fastifyServer.post("/pwl_approximation/list", (request) =>
+            PWL_Approximation(
+                request,
+                context.scoreArguments,
+                context.connection,
+                context.scoreRepository,
+                context.securityRepository,
+                context.analyticsRepository
+            )
+        );
+
+        context.fastifyServer.post("/pwl_approximation/transform", (request) =>
+            PWL_Approximation(
+                request,
+                context.scoreArguments,
+                context.connection,
+                context.scoreRepository,
+                context.securityRepository,
+                context.analyticsRepository
+            )
+        );
+
+        context.fastifyServer.get("/pwl_approximation/get", (request) =>
+            PWL_Approximation(
+                request,
+                context.scoreArguments,
+                context.connection,
+                context.scoreRepository,
+                context.securityRepository,
+                context.analyticsRepository
+            )
+        );
+
         context.fastifyServer.listen(
             process.env.HTTP_PORT ? Number(process.env.HTTP_PORT) : 3000,
             (process.env.HTTP_ADDRESS = "127.0.0.1"),

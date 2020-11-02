@@ -1,7 +1,7 @@
 import { IPortfolioProviderFactoryContext } from "../Utilities/portfolio/interfaces";
 
 export interface IScoringApp<T> {
-    main(): Promise<T>;
+    main(jobConfig: any): Promise<T>;
 }
 
 export interface IScoringResult {
