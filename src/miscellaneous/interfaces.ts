@@ -14,9 +14,9 @@ export interface IScoringResult {
 export interface IAI_Scores {
     date: Date;
     symbol: string;
-    scoreName: string;
-    scoreValue: number;
-    scoreObject: object;
+    name: string;
+    value: number;
+    data: object;
     comment: string;
 }
 

@@ -24,6 +24,7 @@ export interface IPWL_ApproximationResult {
 export interface IPWL_ApproximationDocument {
     date: Date;
     symbol: string;
+    interval: string;
     segmentNumber: number;
     startingIndex: number;
     endingIndex: number;

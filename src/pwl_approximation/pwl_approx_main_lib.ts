@@ -47,21 +47,21 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         const pwlResult = {
             date: new Date(),
             symbol: symbol,
-            scoreName: "pwl_approx",
-            scoreValue: 0,
-            scoreObject: result,
+            name: "pwl_approx",
+            value: result.length,
+            data: result,
             comment,
         } as IAI_Scores;
 
         logger.info(`PWL_Approximation Result = ${JSON.stringify(pwlResult)}`);
 
-        await this.resultsWriter.write(this.config.uuid, symbol, pwlResult);
+        await this.resultsWriter.write(this.config.uuid, pwlResult);
     }
 
     private findSampleSegments() {
         let i = 0;
         const keys = sampleX.map(key => String(i++));
-        const algorithm = new PWL_Algorithm('sample', 3, sampleX.length, keys, sampleX, sampleY);
+        const algorithm = new PWL_Algorithm('sample', 'sample', 3, sampleX.length, keys, sampleX, sampleY);
 
         // use discontinous regression lines
         const test1Result = algorithm.findFixedNumSegments(false);
@@ -89,7 +89,7 @@ export class PWL_ApproximationApp extends ScoringApp<IScoringResult> {
         logger.debug('yArray count = ' + yArray.length + ' data = ' + JSON.stringify(yArray));
         
         // calculate
-        const algorithm = new PWL_Algorithm(this.config.ticker, numSegments, xArray.length, keyArray, xArray, yArray);        
+        const algorithm = new PWL_Algorithm(this.config.ticker, this.config.interval || '1d', numSegments, xArray.length, keyArray, xArray, yArray);        
         // use xpoints
         // const segmentResults = algorithm.findFixedNumSegments(true);
         const segmentResults = algorithm.findFixedRejectDiscontinousSegments();

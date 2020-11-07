@@ -6,7 +6,7 @@ import { AI_Scores } from "./data/entity/Scores";
 import { Security } from "./data/entity/Securities";
 import { PWL_ApproximationArguments } from "./di/module/args";
 import { getLogger } from "./logging/logger"
-import { PWL_Approximation } from "./REST/main";
+import { PWL_ApproximateList, PWL_Approximation } from "./REST/main";
 
 const logger = getLogger("server");
 
@@ -65,7 +65,7 @@ createConnections()
     .then(() => logger.info("Connection successful"))
     .then(compositionRoot)
     .then((context) => {
-        context.fastifyServer.post("/pwl_approximation/calculate", (request) =>
+        context.fastifyServer.post("/pwl_approximation/ticker", (request) =>
             PWL_Approximation(
                 request,
                 context.scoreArguments,
@@ -77,7 +77,7 @@ createConnections()
         );
 
         context.fastifyServer.post("/pwl_approximation/list", (request) =>
-            PWL_Approximation(
+        PWL_ApproximateList(
                 request,
                 context.scoreArguments,
                 context.connection,

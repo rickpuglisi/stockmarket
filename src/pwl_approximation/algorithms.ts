@@ -19,6 +19,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
   private yHat: number[] = []; 
   constructor(
     public name: string,
+    public interval: string,
     public numSegments: number,
     public numPoints: number,
     public keys: string[],
@@ -405,6 +406,7 @@ export class PWL_Algorithm implements IPWL_Algorithm {
       docs.push({
         date: this.date,
         symbol: this.name,
+        interval: this.interval,
         segmentNumber: i + 1,
         startingIndex: result.indices[i],
         endingIndex: result.indices[i + 1],

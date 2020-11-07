@@ -53,6 +53,6 @@ export async function getJobConfigForPWL_Approximation(ticker: string, interval:
         ticker,
         interval
     };
-    // setRunDateAndUuid(config, body);
+    setRunDateAndUuid(config, {});
     return config;
 }

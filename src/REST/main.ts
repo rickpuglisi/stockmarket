@@ -52,7 +52,7 @@ export function PWL_ApproximateList(
     analyticsRepository: MongoRepository<Analytics>
 ) {
     const action = async () => {
-        let result: Promise<IScoringResult>;
+        let promises: Promise<IScoringResult>[] = [];
         const body = args.body;
         if (body.tickers) {
             const portfConfig: IPortfolioProviderFactoryContext = await getPortfConfig(body);
@@ -65,12 +65,12 @@ export function PWL_ApproximateList(
                 analyticsRepository
             );
 
-            for (const ticker in body.tickers) {
-                await sleep(5000);
-                const config = await getJobConfigForPWL_Approximation(ticker, body.interval);
-                result = app.main(config);
+            for (let i=0; i < body.tickers.length; i++) {
+                await sleep(3500);
+                const config = await getJobConfigForPWL_Approximation(body.tickers[i], body.interval);
+                promises.push(app.main(config));
             }
-            return result
+            return Promise.all(promises);
         } else {
             throw new Error(
                 "The parameter list is not valid. Please refer to user documentation"

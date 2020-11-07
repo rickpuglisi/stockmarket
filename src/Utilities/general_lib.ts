@@ -24,11 +24,30 @@ export function guid(): string {
     );
 }
 
+
+/** 
+ * This function generates a promise to sleep
+ */
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
 
-  
+
+/** 
+ * This function generates a number in yyyymmdd format
+ */
+export function get_yyyymmdd(d: Date): number {
+    const yyyy = '' + d.getFullYear();
+    let mm = '' + (d.getMonth() + 1);
+    let dd = '' + d.getDate();
+    if (mm.length < 2) 
+        mm = '0' + mm;
+    if (dd.length < 2) 
+        dd = '0' + dd;
+    return Number(yyyy+mm+dd);
+}
+
+
 /**
  * This is a deep copy
  */

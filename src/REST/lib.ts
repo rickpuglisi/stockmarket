@@ -3,7 +3,13 @@ import { getLogger } from "../logging/logger";
 const logger = getLogger("rest/lib");
 
 function success(result: any) {
-    result.status = 0;
+    if (result instanceof Array) {
+        for (const res of result) {
+            res.status = 0;
+        }
+    } else {
+        result.status = 0;
+    }
     return result;
 }
 
